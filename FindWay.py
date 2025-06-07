@@ -1,27 +1,7 @@
 import matplotlib.pyplot as plt
+from random import randint
+lst = []
 
-lst_t = [
-    [1, 1, 1, 0, 1, 1],
-    [1, 1, 0, 0, 1, 1],
-    [0, 1, 0, 1, 1, 1],
-    [0, 1, 0, 0, 1, 1],
-    [1, 1, 1, 0, 0, 1]
-]
-lst_t3 = [
-    [1, 1, 1, 0, 1, 0],
-    [1, 1, 0, 0, 1, 0],
-    [0, 1, 0, 1, 1, 0],
-    [0, 1, 0, 0, 1, 0],
-    [1, 1, 1, 0, 0, 0]
-]
-
-lst_t2 = [
-    [1, 1, 1, 0],
-    [1, 1, 0, 0],
-    [0, 1, 0, 1],
-    [0, 1, 0, 1],
-    [1, 1, 0, 0]
-]
 
 
 def find_way_in_lst(lst):
@@ -86,10 +66,23 @@ while True:
     selected_way = input("Please prees 1 for enter matrix from external file.\n"
                          "Please prees 2 for create random matrix.\n")
     if selected_way == '1' or selected_way == '2':
-        selected_way = int(selected_way)
         break
     print("Please enter a valid number.")
 
-solution = find_way_in_lst(lst_t3)
+    if selected_way == '1':
+        pass
+    elif selected_way == '2':
+        def get_number(statement):
+            while True:
+                num = input(statement)
+                if num.isnumeric():
+                    return int(num)
+
+
+        mat_rows = get_number("Please enter number of matrix rows: ")
+        mat_columns = get_number("Please enter number of matrix columns: ")
+        lst = [[randint(0, 1) for _ in range(mat_columns)] for _ in range(mat_rows)]
+
+solution = find_way_in_lst(lst)
 print("Way extant" if solution[0] else "no way")
-create_matrix(lst_t3, find_way_in_lst(lst_t3)[1])
+create_matrix(lst, find_way_in_lst(lst)[1])
