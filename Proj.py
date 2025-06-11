@@ -1,10 +1,11 @@
-import sys, os, random
+import sys, os
 import openpyxl
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtCore import Qt
 from copy import deepcopy
 from random import randint
+import ast
 
 
 def find_way_in_lst(lst):
@@ -43,7 +44,7 @@ def find_way_in_lst(lst):
     return (True, lst_ways) if consist else (False, lst_ways)
 
 
-def display_matrix(table, matrix, highlight=None):
+def display_matrix(table, matrix, highlight=None, lbl_status=None):
     table.clear()
     table.setRowCount(len(matrix))
     table.setColumnCount(len(matrix[0]))
@@ -53,16 +54,42 @@ def display_matrix(table, matrix, highlight=None):
         for j, val in enumerate(row):
             item = QTableWidgetItem(str(val))
             item.setTextAlignment(Qt.AlignCenter)
-            item.setFont(QFont("Tahoma", 12))
+            item.setFont(QFont("Roboto", 12))
             if highlight and highlight[i][j]:
                 item.setBackground(QColor("#a5d6a7"))
             table.setItem(i, j, item)
     table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
+    if highlight is None:
+        lbl_status.setText("No path found")
+        lbl_status.setStyleSheet("color:red; font-family:Roboto; font-size: 20px;")
+        table.setStyleSheet("""
+            QTableWidget {
+                border: 2px solid red;
+                border-radius: 6px;
+            }
+            QTableWidget::item {
+                padding: 10px;
+            }
+        """)
 
-def load_file(table):
-    path= QFileDialog.getOpenFileName(None, "انتخاب فایل", "", "Excel (*.xlsx);;Text (*.txt)")[0]
+    else:
+        lbl_status.setText("Path found")
+        lbl_status.setStyleSheet("color:#2e7d32; font-family:Roboto; font-size: 14px;")
+        table.setStyleSheet("""
+            QTableWidget {
+                border: 2px solid #2e7d32;
+                border-radius: 6px;
+            }
+            QTableWidget::item {
+                padding: 10px;
+            }
+        """)
+
+
+def load_file(table, lbl_status):
+    path = QFileDialog.getOpenFileName(None, "Select file", "", "Excel (*.xlsx);;Text (*.txt)")[0]
     if not path: return
     ext = os.path.splitext(path)[1].lower()
     data = []
@@ -73,22 +100,21 @@ def load_file(table):
             data.append([cell if cell is not None else 0 for cell in row])
     elif ext == ".txt":
         with open(path, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip():
-                    data.append([x for x in line.strip().split(',')])
+            content = f.read()
+            data = ast.literal_eval(content)
 
     available_way = find_way_in_lst(data)
     lst_way = available_way[1] if available_way[0] else None
-    display_matrix(table, data, highlight=lst_way)
+    display_matrix(table, data, lst_way, lbl_status)
 
 
-def create_matrix(table, rows_box, cols_box):
+def create_matrix(table, rows_box, cols_box, lbl_status):
     rows = rows_box.value()
     cols = cols_box.value()
     created_lst = [[randint(0, 1) for _ in range(cols)] for _ in range(rows)]
     available_way = find_way_in_lst(created_lst)
     lst_ways = available_way[1] if available_way[0] else None
-    display_matrix(table, created_lst, lst_ways)
+    display_matrix(table, created_lst, lst_ways, lbl_status)
 
 
 def main():
@@ -109,12 +135,12 @@ def main():
     layout = QVBoxLayout(central)
     control_layout = QHBoxLayout()
 
-    btn_load = QPushButton("📁 Load file")
+    btn_load = QPushButton("Load file")
     rows_box = QSpinBox()
-    rows_box.setRange(1, 100)
+    rows_box.setRange(1, 30)
     rows_box.setValue(5)
     cols_box = QSpinBox()
-    cols_box.setRange(1, 100)
+    cols_box.setRange(1, 30)
     cols_box.setValue(6)
     btn_generate = QPushButton("Create random matrix")
 
@@ -127,19 +153,25 @@ def main():
     table = QTableWidget()
     table.setStyleSheet("QTableWidget::item { padding: 10px; }")
 
-    btn_load.clicked.connect(lambda: load_file(table))
-    btn_generate.clicked.connect(lambda: create_matrix(table, rows_box, cols_box))
+    lbl_status = QLabel("Please select an option.")
+    lbl_status.setStyleSheet("color: #2e7d32; font-family:Roboto; font-size: 12px;")
+    lbl_status.setAlignment(Qt.AlignCenter)
 
     layout.addLayout(control_layout)
+    layout.addWidget(lbl_status)
     layout.addWidget(table)
-    developer_label = QLabel("Developed by Abolfazl Eskandari")
-    developer_label.setAlignment(Qt.AlignCenter)
-    developer_label.setStyleSheet("color: #2e7d32; font-size: 12px;")
 
-    github_label = QLabel('<a href="https://github.com/AbalfazlDev">my github</a>')
-    github_label.setAlignment(Qt.AlignCenter)
+    btn_load.clicked.connect(lambda: load_file(table, lbl_status))
+    btn_generate.clicked.connect(lambda: create_matrix(table, rows_box, cols_box, lbl_status))
+
+    developer_label = QLabel("Developed by Abalfazl Eskandari\n4031101005")
+    developer_label.setAlignment(Qt.AlignCenter)
+    developer_label.setStyleSheet("color: #2e7d32; font-family:Roboto; font-size: 12px;")
+
+    github_label = QLabel('<a href="https://github.com/AbalfazlDev">My Github</a>')
+    github_label.setAlignment(Qt.AlignRight)
     github_label.setOpenExternalLinks(True)
-    github_label.setStyleSheet("color: #2e7d32; font-size: 12px;")
+    github_label.setStyleSheet("color: green; font-family:Roboto; font-size: 12px;")
 
     layout.addWidget(developer_label)
     layout.addWidget(github_label)
