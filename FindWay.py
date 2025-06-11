@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 from random import randint
 import pandas as pd
+
 created_lst = []
 
 
@@ -64,59 +65,59 @@ def create_matrix(lst_data, lst_ways=None):
     table.scale(1, 1)
     plt.show()
 
-
-def read_matrix_from_excel(file_path, sheet_name=0):
-    """
-    Reads a 2D matrix from an Excel file
-
-    Parameters:
-        file_path (str): Path to Excel file
-        sheet_name (str/int): Name or index of sheet (default: first sheet)
-
-    Returns:
-        list: 2D matrix (list of lists)
-    """
-    try:
-        df = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
-
-        matrix = df.values.tolist()
-
-        return matrix
-
-    except Exception as e:
-        print(f"Error reading Excel file: {e}")
-        return None
-
-print("Welcome to this program\n"
-      "This program shows the available paths to get from the first row to the last row.\n\n")
-
-while True:
-    selected_way = input("Please prees 1 for enter matrix from external file.\n"
-                         "Please prees 2 for create random matrix.\n")
-    if selected_way == '1' or selected_way == '2':
-        break
-    print("Please enter a valid number.")
-
-if selected_way == '1':
-    pass
-elif selected_way == '2':
-    def get_number(statement):
-        while True:
-            num = input(statement)
-            if num.isnumeric():
-                return int(num)
-
-
-    mat_rows = get_number("Please enter number of matrix rows: ")
-    mat_columns = get_number("Please enter number of matrix columns: ")
-    created_lst = [[randint(0, 1) for _ in range(mat_columns)] for _ in range(mat_rows)]
-
-
-result = find_way_in_lst(created_lst)
-if result[0]:
-    create_matrix(created_lst, result[1])
-else:
-    print("no way")
-    create_matrix(created_lst, result[1])
-
-
+#
+# def read_matrix_from_excel(file_path, sheet_name=0):
+#     """
+#     Reads a 2D matrix from an Excel file
+#
+#     Parameters:
+#         file_path (str): Path to Excel file
+#         sheet_name (str/int): Name or index of sheet (default: first sheet)
+#
+#     Returns:
+#         list: 2D matrix (list of lists)
+#     """
+#     try:
+#         df = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
+#
+#         matrix = df.values.tolist()
+#
+#         return matrix
+#
+#     except Exception as e:
+#         print(f"Error reading Excel file: {e}")
+#         return None
+#
+# # print("Welcome to this program\n"
+# #       "This program shows the available paths to get from the first row to the last row.\n\n")
+#
+# # while True:
+# #     selected_way = input("Please prees 1 for enter matrix from external file.\n"
+# #                          "Please prees 2 for create random matrix.\n")
+# #     if selected_way == '1' or selected_way == '2':
+# #         break
+# #     print("Please enter a valid number.")
+# #
+# # if selected_way == '1':
+# #     pass
+# # elif selected_way == '2':
+# #     def get_number(statement):
+# #         while True:
+# #             num = input(statement)
+# #             if num.isnumeric():
+# #                 return int(num)
+# #
+# #
+# #     mat_rows = get_number("Please enter number of matrix rows: ")
+# #     mat_columns = get_number("Please enter number of matrix columns: ")
+# #     created_lst = [[randint(0, 1) for _ in range(mat_columns)] for _ in range(mat_rows)]
+# #
+# #
+# # result = find_way_in_lst(created_lst)
+# # if result[0]:
+# #     create_matrix(created_lst, result[1])
+# # else:
+# #     print("no way")
+# #     create_matrix(created_lst, result[1])
+# #
+# #
